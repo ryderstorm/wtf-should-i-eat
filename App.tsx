@@ -1,14 +1,13 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { SearchForm } from './components/SearchForm';
 import { RestaurantList } from './components/RestaurantList';
-import { findRestaurants } from './services/geminiService';
-import type { Restaurant, GroundingChunk, StreamResult } from './types';
+import { findRestaurants } from './services/mapsService';
+import type { Restaurant, StreamResult } from './types';
 import { ForkKnifeIcon } from './components/Icons';
 import { sortRestaurants } from './utils/sortUtils';
 
 const App: React.FC = () => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-  const [sources, setSources] = useState<GroundingChunk[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState<boolean>(false);
@@ -22,7 +21,6 @@ const App: React.FC = () => {
     setError(null);
     setHasSearched(true);
     setRestaurants([]);
-    setSources([]);
     accumulatedRestaurantsRef.current = [];
     
     // Clear any pending batch updates
@@ -31,47 +29,17 @@ const App: React.FC = () => {
       batchTimeoutRef.current = null;
     }
 
-    let currentSources: GroundingChunk[] = [];
-    const sourceMap = new Map<string, string>();
-
     try {
       const stream = findRestaurants(location, radius, openNow, cuisine);
       let foundRestaurants = false;
       
       for await (const result of stream) {
-        if (result.type === 'sources') {
-            setSources(result.data);
-            currentSources = result.data;
-            
-            // Build a map for O(1) lookups instead of O(n) searches
-            sourceMap.clear();
-            for (const source of result.data) {
-              const titleLower = source.maps.title.toLowerCase();
-              sourceMap.set(titleLower, source.maps.uri);
-            }
-        } else if (result.type === 'restaurant') {
+        if (result.type === 'restaurant') {
             foundRestaurants = true;
             const restaurantData = result.data;
 
-            // Use Map for efficient lookup
-            const restaurantNameLower = restaurantData.name.toLowerCase();
-            let mapsUri: string | undefined;
-            
-            // Check if any source title contains the restaurant name or vice versa
-            for (const [titleLower, uri] of sourceMap.entries()) {
-              if (titleLower.includes(restaurantNameLower) || restaurantNameLower.includes(titleLower)) {
-                mapsUri = uri;
-                break;
-              }
-            }
-
-            const augmentedRestaurant: Restaurant = {
-              ...restaurantData,
-              mapsUri,
-            };
-
             // Add to accumulated array instead of immediately updating state
-            accumulatedRestaurantsRef.current.push(augmentedRestaurant);
+            accumulatedRestaurantsRef.current.push(restaurantData);
             
             // Batch updates: update state every 3 restaurants or every 200ms
             // Don't sort during streaming - just show unsorted results for better UX
@@ -132,14 +100,14 @@ const App: React.FC = () => {
       <main className="container mx-auto p-4 md:p-6">
         <RestaurantList
           restaurants={restaurants}
-          sources={sources}
+          sources={[]}
           isLoading={isLoading}
           error={error}
           hasSearched={hasSearched}
         />
       </main>
        <footer className="text-center py-4 text-xs text-slate-500 dark:text-slate-400">
-        <p>Powered by Google Gemini. Find your next favorite local eatery.</p>
+        <p>Powered by Google Maps. Find your next favorite local eatery.</p>
       </footer>
     </div>
   );

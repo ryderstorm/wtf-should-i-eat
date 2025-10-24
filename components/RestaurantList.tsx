@@ -1,12 +1,12 @@
 
 import React from 'react';
-import type { Restaurant, GroundingChunk } from '../types';
+import type { Restaurant } from '../types';
 import { RestaurantCard } from './RestaurantCard';
 import { Spinner } from './Spinner';
 
 interface RestaurantListProps {
   restaurants: Restaurant[];
-  sources: GroundingChunk[];
+  sources: any[];
   isLoading: boolean;
   error: string | null;
   hasSearched: boolean;
@@ -58,20 +58,6 @@ export const RestaurantList: React.FC<RestaurantListProps> = ({ restaurants, sou
           <RestaurantCard key={`${restaurant.name}-${restaurant.address}`} restaurant={restaurant} />
         ))}
       </div>
-      {sources.length > 0 && (
-          <div className="mt-12 pt-6 border-t border-slate-200 dark:border-slate-700">
-            <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">Data Sources from Google Maps:</h3>
-            <ul className="flex flex-wrap gap-x-4 gap-y-2">
-              {sources.map((source, index) => (
-                <li key={index}>
-                  <a href={source.maps.uri} target="_blank" rel="noopener noreferrer" className="text-xs text-rose-600 dark:text-rose-400 hover:underline">
-                    {source.maps.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
     </div>
   );
 };

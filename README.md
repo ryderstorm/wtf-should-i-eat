@@ -116,8 +116,8 @@ app/
 ## 🎯 How It Works
 
 1. **User Input**: You provide location, radius, cuisine filter, and open-now preference
-2. **AI Processing**: Google Gemini AI searches Google Maps for matching restaurants
-3. **Streaming Results**: Results stream back as JSON objects in real-time
+2. **Direct API Call**: Google Maps Places API searches for restaurants near your location
+3. **Streaming Results**: Results stream back in real-time for instant feedback
 4. **Smart Batching**: Results are batched every 3 restaurants or 200ms for optimal performance
 5. **Intelligent Sorting**: Results are sorted once at the end by open status, closing time, and ratings
 6. **Display**: Restaurant cards render with all relevant information and links
@@ -147,8 +147,8 @@ See [docs/performance.md](./docs/performance.md) for detailed information.
 - **TypeScript** - Type safety
 - **Vite** - Build tool and dev server
 - **Tailwind CSS** - Styling
-- **Google Gemini AI** - Restaurant discovery
-- **Google Maps** - Location data
+- **Google Maps Places API** - Restaurant discovery and location data
+- **Google Geocoding API** - Address to coordinates conversion
 
 ## 🤝 Contributing
 
@@ -169,7 +169,7 @@ This project is private and proprietary.
 ## 🙏 Acknowledgments
 
 - Built with Google AI Studio
-- Powered by Google Gemini AI
+- Powered by Google Maps Places API
 - Location data from Google Maps
 
 ## 📧 Support
