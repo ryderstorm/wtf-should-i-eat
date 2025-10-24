@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, memo } from 'react';
 import type { Restaurant } from '../types';
 import { getClosingTime } from '../utils/sortUtils';
 import { PhoneIcon, GlobeAltIcon, MapPinIcon, StarIcon, ClockIcon } from './Icons';
@@ -9,7 +9,7 @@ interface RestaurantCardProps {
 
 const WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-export const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
+export const RestaurantCard: React.FC<RestaurantCardProps> = memo(({ restaurant }) => {
   const isClosed = restaurant.status.toLowerCase().includes('closed');
 
   const closingTime = useMemo(() => {
@@ -73,7 +73,9 @@ export const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) =>
       </div>
     </div>
   );
-};
+});
+
+RestaurantCard.displayName = 'RestaurantCard';
 
 interface InfoLineProps {
     icon: React.ReactNode;
@@ -93,4 +95,4 @@ const InfoLine: React.FC<InfoLineProps> = ({ icon, text, href }) => {
         return <a href={href} target="_blank" rel="noopener noreferrer" className="hover:text-rose-600 dark:hover:text-rose-400 transition-colors">{content}</a>
     }
     return content;
-}
+};

@@ -54,8 +54,8 @@ export const RestaurantList: React.FC<RestaurantListProps> = ({ restaurants, sou
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {restaurants.map((restaurant, index) => (
-          <RestaurantCard key={`${restaurant.name}-${index}`} restaurant={restaurant} />
+        {restaurants.map((restaurant) => (
+          <RestaurantCard key={`${restaurant.name}-${restaurant.address}`} restaurant={restaurant} />
         ))}
       </div>
       {sources.length > 0 && (
