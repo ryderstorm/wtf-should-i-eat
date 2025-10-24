@@ -93,11 +93,12 @@ const isOpenNow = (place: MapsPlace): boolean => {
 
 // Geocode a string location to coordinates
 async function geocodeLocation(location: string): Promise<{ lat: number; lng: number }> {
-  if (!process.env.GEMINI_API_KEY) {
-    throw new Error('GEMINI_API_KEY environment variable is not set.');
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error('VITE_GEMINI_API_KEY environment variable is not set.');
   }
 
-  const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(location)}&key=${process.env.GEMINI_API_KEY}`;
+  const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(location)}&key=${apiKey}`;
   
   const response = await fetch(geocodeUrl);
   const data = await response.json();
@@ -116,8 +117,9 @@ export async function* findRestaurants(
   openNow: boolean,
   cuisine: string,
 ): AsyncGenerator<StreamResult> {
-  if (!process.env.GEMINI_API_KEY) {
-    throw new Error('GEMINI_API_KEY environment variable is not set.');
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error('VITE_GEMINI_API_KEY environment variable is not set.');
   }
 
   // Convert location to coordinates
@@ -160,7 +162,7 @@ export async function* findRestaurants(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Goog-Api-Key': process.env.GEMINI_API_KEY,
+        'X-Goog-Api-Key': apiKey,
         'X-Goog-FieldMask': 'places.id,places.displayName,places.location,places.rating,places.userRatingCount,places.priceLevel,places.formattedAddress,places.nationalPhoneNumber,places.websiteUri,places.regularOpeningHours,places.types,places.businessStatus',
       },
       body: JSON.stringify(requestBody),
