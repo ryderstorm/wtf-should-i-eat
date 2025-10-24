@@ -1,0 +1,7 @@
+{
+  "name": "WTF Should I Eat?",
+  "description": "A restaurant and takeout finder app that helps users discover locally-owned dining options near their location or a chosen spot. The app focuses on supporting independent, locally-owned businesses while filtering out large chain restaurants.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
